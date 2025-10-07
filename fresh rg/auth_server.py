@@ -14,7 +14,7 @@ load_dotenv()
 # Configuration
 ROBLOX_CLIENT_ID = os.getenv('ROBLOX_CLIENT_ID')
 ROBLOX_CLIENT_SECRET = os.getenv('ROBLOX_CLIENT_SECRET')
-GITHUB_PAGES_URL = "https://indiandripcat.github.io/fresh-royal-guard/verification.html"  # Update this to your GitHub Pages URL
+GITHUB_PAGES_URL = "https://indiandripcat.github.io/fresh-royal-guard/"  # Points to index.html
 REDIRECT_URI = "http://localhost:5000/auth/roblox/callback"
 
 app = FastAPI()
