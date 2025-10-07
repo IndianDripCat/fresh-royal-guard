@@ -1,9 +1,9 @@
 from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 import uvicorn
 import os
 import aiohttp
-from urllib.parse import urlencode, quote_plus
+from urllib.parse import urlencode, quote_plus, unquote
 from datetime import datetime
 import motor.motor_asyncio
 from dotenv import load_dotenv
@@ -81,17 +81,57 @@ async def auth_callback(code: str, state: str):
                         upsert=True
                     )
                     
-                    # Redirect to success page with username in URL
-                    safe_username = quote_plus(username)
-                    return RedirectResponse(f"{GITHUB_PAGES_URL}?status=success&username={safe_username}")
+                    # Serve success page directly
+                    with open('index.html', 'r', encoding='utf-8') as f:
+                        html_content = f.read()
+                    
+                    # Inject the success message and username
+                    success_html = """
+                    <div id="success" style="display: block;">
+                        <span class="emoji">🎉</span>
+                        <h1>Verification Complete!</h1>
+                        <div class="message">
+                            Thank you for verifying your account, <span id="verified-username" class="username">{username}</span>!
+                        </div>
+                        <div class="success">✅ Successfully Verified</div>
+                        <p>You can now return to Discord and close this window.</p>
+                        <script>
+                            // Close the window after 3 seconds
+                            setTimeout(() => window.close(), 3000);
+                        </script>
+                    </div>
+                    """
+                    
+                    # Replace the content div with our success message
+                    html_content = html_content.replace('<div id="success" style="display: none;">', 
+                                                     '<div id="success" style="display: none;">')
+                    html_content = html_content.replace('</div>', success_html + '</div>', 1)
+                    
+                    return HTMLResponse(content=html_content, status_code=200)
     
     except Exception as e:
         print(f"Error during OAuth callback: {str(e)}")
-        import urllib.parse
-        error_url = f"{GITHUB_PAGES_URL}?status=error&message=server_error"
-        if not error_url.startswith('http'):
-            error_url = f"https://{error_url}"
-        return RedirectResponse(error_url)
+        try:
+            with open('index.html', 'r', encoding='utf-8') as f:
+                html_content = f.read()
+            
+            # Inject the error message
+            error_html = """
+            <div id="error" style="display: block;">
+                <span class="emoji">⚠️</span>
+                <h1>Verification Failed</h1>
+                <div class="error" id="error-message">An error occurred during verification. Please try again.</div>
+                <p>Please try again or contact support if the issue persists.</p>
+            </div>
+            """
+            
+            # Replace the error div with our error message
+            html_content = html_content.replace('<div id="error" style="display: none;">', 
+                                             error_html + '<div id="error" style="display: none;">', 1)
+            
+            return HTMLResponse(content=html_content, status_code=200)
+        except Exception as e2:
+            return HTMLResponse(content="<h1>Verification Error</h1><p>An error occurred during verification.</p>", status_code=500)
 
 if __name__ == "__main__":
     print("Starting auth server on http://localhost:5000")
