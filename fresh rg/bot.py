@@ -34,7 +34,7 @@ class VerifyButton(discord.ui.Button):
             # Create Roblox OAuth URL
             params = {
                 'client_id': '5367039638538336991',  # You'll need to set this up in Roblox Creator Dashboard
-                'redirect_uri': 'http://localhost:5000/auth/roblox/callback',   # Your redirect URI (must be configured in Roblox)
+                'redirect_uri': 'https://indiandripcat.github.io/fresh-royal-guard/verify',   # GitHub Pages redirect URI
                 'response_type': 'code',
                 'scope': 'openid profile:read',
                 'state': state

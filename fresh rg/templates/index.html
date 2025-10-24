@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verification Complete - British Army</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            padding: 50px 20px;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            height: 100vh;
+            margin: 0;
+            color: white;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .container { 
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        h1 { 
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .success { 
+            color: #4CAF50;
+            font-size: 1.5em;
+            margin: 20px 0;
+        }
+        .error {
+            color: #f44336;
+            font-size: 1.5em;
+            margin: 20px 0;
+        }
+        .username {
+            font-weight: bold;
+            color: #ffeb3b;
+            font-size: 1.2em;
+        }
+        .message {
+            font-size: 1.2em;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+        .emoji {
+            font-size: 3em;
+            margin: 20px 0;
+            display: block;
+        }
+        .footer {
+            margin-top: 40px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="success" style="display: none;">
+            <span class="emoji">🎉</span>
+            <h1>Verification Complete!</h1>
+            <div class="message">
+                Thank you for verifying your account, <span id="verified-username" class="username"></span>!
+            </div>
+            <div class="success">✅ Successfully Verified</div>
+            <p>You can now return to Discord and close this window.</p>
+        </div>
+
+        <div id="error" style="display: none;">
+            <span class="emoji">⚠️</span>
+            <h1>Verification Failed</h1>
+            <div class="error" id="error-message"></div>
+            <p>Please try again or contact support if the issue persists.</p>
+            <button onclick="window.location.href='https://discord.gg/your-server'" 
+                    style="margin-top: 20px; padding: 10px 20px; font-size: 1em; 
+                           background: #7289DA; color: white; border: none; 
+                           border-radius: 5px; cursor: pointer;">
+                Get Help on Discord
+            </button>
+        </div>
+
+        <div class="footer">
+            British Army Verification System
+        </div>
+    </div>
+
+    <script>
+        // Function to get URL parameters
+        function getParameterByName(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+    
+        // Get parameters
+        var status = getParameterByName('status');
+        var username = getParameterByName('username');
+        var errorMessage = getParameterByName('message');
+    
+        // Show appropriate message
+        if (status === 'success' && username) {
+            // Show success message
+            var successDiv = document.getElementById('success');
+            var usernameSpan = document.getElementById('verified-username');
+            
+            if (successDiv && usernameSpan) {
+                successDiv.style.display = 'block';
+                usernameSpan.textContent = username;
+                
+                // Create a meta refresh to close the window after 3 seconds
+                var meta = document.createElement('meta');
+                meta.httpEquiv = 'refresh';
+                meta.content = '3;url=about:blank';
+                document.getElementsByTagName('head')[0].appendChild(meta);
+            }
+        } else {
+            // Show error message
+            var errorDiv = document.getElementById('error');
+            var errorElement = document.getElementById('error-message');
+            
+            if (errorDiv && errorElement) {
+                errorDiv.style.display = 'block';
+                
+                if (errorMessage) {
+                    var messages = {
+                        'no_code': 'No authorization code was provided.',
+                        'token_failed': 'Failed to obtain access token from Roblox.',
+                        'no_user_id': 'Could not retrieve your Roblox user ID.',
+                        'server_error': 'An internal server error occurred.'
+                    };
+                    errorElement.textContent = messages[errorMessage] || 'An unknown error occurred.';
+                } else {
+                    errorElement.textContent = 'An unknown error occurred. No error details provided.';
+                }
+            }
+        }
+    </script>
