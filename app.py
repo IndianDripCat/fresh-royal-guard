@@ -17,7 +17,7 @@ verifications = db["roblox_verifications"]
 
 @app.route("/")
 def index():
-    return "Roblox Discord Verification - Railway redirect handler online!"
+    return "Roblox Discord Verification - Railway redirect handler online"
 
 @app.route("/roblox/callback")
 def roblox_callback():
