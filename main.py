@@ -66,7 +66,7 @@ class BeginVerificationButton(discord.ui.Button):
         params = {
             "client_id": "1186155268224623097",
             "response_type": "code",
-            "scope": "openid profile email",
+            "scope": "openid profile",
             "redirect_uri": redirect_uri,
             "state": "discordverif"
         }
