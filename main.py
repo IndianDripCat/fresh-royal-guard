@@ -61,7 +61,17 @@ class VerificationView2(discord.ui.View):
 
 class BeginVerificationButton(discord.ui.Button):
     def __init__(self):
-        super().__init__(label="Begin Verification", style=discord.ButtonStyle.link, url="https://authorize.roblox.com/oauth/authorize?client_id=1186155268224623097&response_type=code&scope=openid+profile+email&redirect_uri=https://fresh-royal-guard-production.up.railway.app/roblox/callback")
+        from urllib.parse import urlencode
+        redirect_uri = "https://fresh-royal-guard-production.up.railway.app/roblox/callback"
+        params = {
+            "client_id": "1186155268224623097",
+            "response_type": "code",
+            "scope": "openid profile email",
+            "redirect_uri": redirect_uri,
+            "state": "discordverif"
+        }
+        url = f"https://authorize.roblox.com/oauth/authorize?{urlencode(params)}"
+        super().__init__(label="Begin Verification", style=discord.ButtonStyle.link, url=url)
     async def callback(self, interaction: discord.Interaction):
         # No need to handle here as Discord handles link buttons automatically
         pass
